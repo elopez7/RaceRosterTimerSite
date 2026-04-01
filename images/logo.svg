@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="32" height="32">
+  <!-- Blue circle background -->
+  <circle cx="128" cy="128" r="120" fill="#1BA4F0"/>
+  <!-- Connecting lines (X pattern) -->
+  <line x1="52" y1="52" x2="204" y2="204" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+  <line x1="204" y1="52" x2="52" y2="204" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+  <!-- Central ring -->
+  <circle cx="128" cy="128" r="40" fill="#1BA4F0"/>
+  <circle cx="128" cy="128" r="40" fill="none" stroke="#FFFFFF" stroke-width="14"/>
+  <!-- Four corner nodes -->
+  <circle cx="52" cy="52" r="18" fill="#FFFFFF"/>
+  <circle cx="204" cy="52" r="18" fill="#FFFFFF"/>
+  <circle cx="52" cy="204" r="18" fill="#FFFFFF"/>
+  <circle cx="204" cy="204" r="18" fill="#FFFFFF"/>
+</svg>

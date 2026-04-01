@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Race Roster Timer</title>
+  <meta name="description" content="Race Roster Timer bridges your timing system's CSV files to the Race Roster results platform. Set it up once, and results flow live as your race unfolds.">
+  <link rel="icon" href="images/logo.svg" type="image/svg+xml">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Backgrounds */
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F5F7FA;
+      --bg-tertiary: #EDF0F4;
+      --bg-elevated: #FFFFFF;
+
+      /* Text */
+      --text-primary: #1A1A2E;
+      --text-secondary: #6B7280;
+      --text-tertiary: #9CA3AF;
+      --text-inverse: #FFFFFF;
+
+      /* Brand */
+      --accent: #0099FF;
+      --accent-hover: #007ACC;
+      --accent-pressed: #005F99;
+      --accent-muted: rgba(0, 153, 255, 0.10);
+      --teal: #2A6979;
+      --teal-hover: #1F5460;
+      --teal-light: #E8F4F8;
+
+      /* Semantic */
+      --success: #16A34A;
+      --warning: #D97706;
+      --error: #DC2626;
+
+      /* Borders */
+      --border: #E5E7EB;
+      --border-hover: #D1D5DB;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.10);
+
+      /* Radius */
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Ubuntu', 'Helvetica Neue', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Nav */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background-color: var(--teal);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-inverse);
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .nav-brand img {
+      height: 32px;
+      width: 32px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-inverse);
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 80px 32px 64px;
+      gap: 24px;
+      background: var(--teal-light);
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    /* Showcase */
+    .showcase {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .showcase-heading {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 56px;
+      padding-top: 48px;
+    }
+
+    .showcase-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin-bottom: 64px;
+    }
+
+    .showcase-item.reverse {
+      direction: rtl;
+    }
+
+    .showcase-item.reverse > * {
+      direction: ltr;
+    }
+
+    .showcase-text {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .showcase-icon {
+      font-size: 40px;
+    }
+
+    .showcase-text h3 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .showcase-text p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    .showcase-img {
+      width: 100%;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 13px;
+      background: var(--teal);
+    }
+
+    footer,
+    footer a {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    footer a:hover {
+      color: var(--text-inverse);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 48px 20px 40px;
+      }
+
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .btn {
+        justify-content: center;
+      }
+
+      .showcase-item,
+      .showcase-item.reverse {
+        grid-template-columns: 1fr;
+        direction: ltr;
+        gap: 24px;
+      }
+
+      .showcase {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      nav {
+        padding: 12px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <img src="images/logo-white.svg" alt="Race Roster Timer logo">
+      Race Roster Timer
+    </div>
+    <div class="nav-links">
+      <a href="https://estebanlopezp.com/" target="_blank" rel="noopener">
+        Portfolio
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <h1>Race results, uploaded <span>automatically</span>.</h1>
+      <p>Race Roster Timer bridges your timing system's CSV files to the Race Roster results platform. Set it up once, and results flow live as your race unfolds.</p>
+      <div class="hero-actions">
+        <a href="https://estebanlopezp.com/" class="btn btn-primary" target="_blank" rel="noopener">Portfolio</a>
+      </div>
+    </section>
+
+    <section class="showcase">
+      <h2 class="showcase-heading">How It Works</h2>
+
+      <div class="showcase-item">
+        <img class="showcase-img" src="images/screenshot-event-list.png" alt="Event list view showing events with Manage button">
+        <div class="showcase-text">
+          <span class="showcase-icon" aria-hidden="true">&#x1F3C1;</span>
+          <h3>Select Your Event</h3>
+          <p>Log in with your Race Roster credentials and browse your events in a searchable list. Click "Manage" on the event you're timing today to get started.</p>
+        </div>
+      </div>
+
+      <div class="showcase-item reverse">
+        <img class="showcase-img" src="images/screenshot-race-config-ready.png" alt="Race Configuration view with file mapped and ready to upload">
+        <div class="showcase-text">
+          <span class="showcase-icon" aria-hidden="true">&#x1F4C1;</span>
+          <h3>Map Your CSV Files</h3>
+          <p>For each race (5K, Half Marathon, etc.), browse and select the CSV file your timing system outputs. Choose "Upload Once" for final results, or "Upload on Interval" for live race-day updates.</p>
+        </div>
+      </div>
+
+      <div class="showcase-item">
+        <img class="showcase-img" src="images/screenshot-race-config.png" alt="Race Configuration view showing active uploads and log">
+        <div class="showcase-text">
+          <span class="showcase-icon" aria-hidden="true">&#x23F1;&#xFE0F;</span>
+          <h3>Set It and Forget It</h3>
+          <p>Hit Start and the app handles the rest. Results upload on a repeating interval, and every cycle is logged with timestamps and result set IDs. Smart skip detection saves bandwidth when the file hasn't changed.</p>
+        </div>
+      </div>
+
+      <div class="showcase-item reverse">
+        <img class="showcase-img" src="images/screenshot-about.png" alt="About dialog showing app version and Qt license info">
+        <div class="showcase-text">
+          <span class="showcase-icon" aria-hidden="true">&#x1F512;</span>
+          <h3>Built for Race Day</h3>
+          <p>Secure OAuth authentication with automatic token refresh. Persistent settings remember your file mappings across sessions. Built with Qt 6 for native performance on Windows, with macOS and Linux support planned.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Built by <a href="https://estebanlopezp.com/" target="_blank" rel="noopener">Esteban Lopez</a> &mdash; &copy; 2026 Race Roster. All rights reserved.
+  </footer>
+</body>
+</html>
